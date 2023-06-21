@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Todos = void 0;
 class Todos {
-    constructor() {
+    constructor(urgencyChecker) {
+        this.urgencyChecker = urgencyChecker;
         this.tasks = new Map();
     }
     get size() {
@@ -32,6 +33,13 @@ class Todos {
         return `The task named ${title} was created in ${task.creationTime}.
     Its description: ${task.description}.
     It must be finished by ${task.finishBy}`;
+    }
+    canPostpone(title) {
+        const task = this.tasks.get(title);
+        if (!task) {
+            throw new Error(`No task with name "${title}" was found!`);
+        }
+        return !this.urgencyChecker.isUrgent(task);
     }
 }
 exports.Todos = Todos;

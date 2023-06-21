@@ -1,5 +1,10 @@
+import { Task } from "./types";
+import { UrgencyChecker } from "./urgency-checker";
+
 export class Todos {
   private tasks = new Map<string, Task>();
+
+  constructor(private urgencyChecker: UrgencyChecker) {}
 
   get size(): number {
     return this.tasks.size;
@@ -36,11 +41,13 @@ export class Todos {
     Its description: ${task.description}.
     It must be finished by ${task.finishBy}`;
   }
-}
 
-export interface Task {
-  title: string;
-  creationTime: string;
-  finishBy: string;
-  description?: string;
+  canPostpone(title: string): boolean {
+    const task = this.tasks.get(title);
+    if (!task) {
+      throw new Error(`No task with name "${title}" was found!`);
+    }
+
+    return !this.urgencyChecker.isUrgent(task);
+  }
 }
