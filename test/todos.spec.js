@@ -9,8 +9,9 @@ const DISHES = {
 };
 describe("TodoList", () => {
     let todos;
+    let urgencyCheckerMock = { isUrgent: jest.fn() };
     beforeEach(() => {
-        todos = new todos_1.Todos();
+        todos = new todos_1.Todos(urgencyCheckerMock);
     });
     it("should be created", () => {
         expect(todos).toBeTruthy();
@@ -36,6 +37,23 @@ describe("TodoList", () => {
         });
         it("should throw an error when trying to complete a non existing task", () => {
             expect(() => todos.complete(DISHES.title)).toThrow();
+        });
+    });
+    describe("describe", () => {
+        it("should describe a task", () => {
+            todos.add(DISHES);
+            expect(todos.describe(DISHES.title)).toMatchInlineSnapshot(`
+"The task named Do the dishes was created in Sunday.
+    Its description: Clean all the dishes.
+    It must be finished by Sunday"
+`);
+        });
+    });
+    describe("can postpone", () => {
+        it("should return false if the task is urgent", () => {
+            todos.add(DISHES);
+            urgencyCheckerMock.isUrgent.mockReturnValueOnce(true);
+            expect(todos.canPostpone(DISHES.title)).toBeFalsy();
         });
     });
 });

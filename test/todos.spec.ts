@@ -1,4 +1,5 @@
-import { Task, Todos } from "../src/todos";
+import { Todos } from "../src/todos";
+import { Task } from "../src/types";
 
 const DISHES: Task = {
   title: "Do the dishes",
@@ -9,9 +10,10 @@ const DISHES: Task = {
 
 describe("TodoList", () => {
   let todos: Todos;
+  let urgencyCheckerMock = { isUrgent: jest.fn() };
 
   beforeEach(() => {
-    todos = new Todos();
+    todos = new Todos(urgencyCheckerMock);
   });
 
   it("should be created", () => {
@@ -58,6 +60,16 @@ describe("TodoList", () => {
     Its description: Clean all the dishes.
     It must be finished by Sunday"
 `);
+    });
+  });
+
+  describe("can postpone", () => {
+    it("should return false if the task is urgent", () => {
+      todos.add(DISHES);
+
+      urgencyCheckerMock.isUrgent.mockReturnValueOnce(true);
+
+      expect(todos.canPostpone(DISHES.title)).toBeFalsy();
     });
   });
 });
