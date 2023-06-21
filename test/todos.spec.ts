@@ -48,4 +48,16 @@ describe("TodoList", () => {
       expect(() => todos.complete(DISHES.title)).toThrow();
     });
   });
+
+  describe("describe", () => {
+    it("should describe a task", () => {
+      todos.add(DISHES);
+
+      expect(todos.describe(DISHES.title)).toMatchInlineSnapshot(`
+"The task named Do the dishes was created in Sunday.
+    Its description: Clean all the dishes.
+    It must be finished by Sunday"
+`);
+    });
+  });
 });
